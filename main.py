@@ -5,19 +5,16 @@ import random
 from pygame.locals import *
 import math
 
-
-
 # Инициализация Pygame
 pygame.init()
 pygame.font.init()
-
 
 all_sprites = pygame.sprite.Group()
 
 # Размеры окна
 size = width, height = 400, 600
 
-background_image = pygame.image.load('data/bg.png')  # Замените 'background.jpg' на путь к вашему изображению
+background_image = pygame.image.load('data/bg.png')
 background_rect = background_image.get_rect()
 
 # подкл фоновой музыки
@@ -31,7 +28,6 @@ pygame.mixer.music.play()
 # Зацикливание музыки при её завершении
 pygame.event.set_allowed(pygame.USEREVENT)
 
-
 # Колличество очков
 score = 0
 
@@ -39,8 +35,8 @@ screen = pygame.display.set_mode(size)
 pygame.display.set_caption("DolphinYo!")
 pygame.mouse.set_cursor(*pygame.cursors.tri_left)
 
-
 Flag = True
+
 
 # Функция для загрузки изображений
 def load_image(name, colorkey=None):
@@ -58,9 +54,9 @@ def load_image(name, colorkey=None):
         image = image.convert_alpha()
     return image
 
+
 dolphin_image = load_image("dolphin.png")
 wave_image = load_image("wave.png")
-
 
 
 def show_start_screen():
@@ -103,9 +99,6 @@ def show_start_screen():
 def show_end_screen():
     global Flag, speed, spawn_interval, score
 
-
-
-
     # Отображение изображения "end.png"
     start_image = pygame.image.load('data/end.png')
     start_rect = start_image.get_rect(center=(width // 2, height // 2))
@@ -116,10 +109,6 @@ def show_end_screen():
     text2 = font.render(f"Score: {int(score)}", True, (0, 0, 0))
     text_rect2 = text2.get_rect(center=(width // 2, height // 3))
     screen.blit(text2, text_rect2)
-
-
-
-
 
     pygame.display.flip()
 
@@ -144,12 +133,6 @@ def show_end_screen():
                 sys.exit()
 
 
-
-
-
-
-
-
 class Board():
     # Создание поля
     def __init__(self, width, height):
@@ -171,10 +154,8 @@ class Board():
     def render(self, screen):
         for i in range(self.width):
             for j in range(self.height):
-                pygame.draw.rect(screen, (255, 255, 255), (self.left + i * self.cell_size, self.top + j * self.cell_size, self.cell_size, self.cell_size), 1)
-
-
-
+                pygame.draw.rect(screen, (255, 255, 255), (
+                    self.left + i * self.cell_size, self.top + j * self.cell_size, self.cell_size, self.cell_size), 1)
 
 
 class Wave(pygame.sprite.Sprite):
@@ -214,11 +195,6 @@ class Wave(pygame.sprite.Sprite):
 
     def get_mask(self):
         return self.mask
-
-
-
-
-
 
 
 class Player(pygame.sprite.Sprite):
@@ -269,12 +245,14 @@ class Player(pygame.sprite.Sprite):
 def start():
     player = Player(2, board.cell_size)
 
+
 def reset_game():
     global score, waves, all_sprites, player
     score = 0
     waves = []
     all_sprites.empty()  # Удаляем все спрайты
     player = Player(2, board.cell_size)
+
 
 # Поле 4 на 6
 board = Board(4, 6)
@@ -290,9 +268,6 @@ spawn_interval = 1000  # Интервал спавна волн в миллис�
 running = True
 
 speed = 0.05
-
-
-
 
 while running:
     if Flag:
@@ -311,7 +286,7 @@ while running:
             elif event.key == pygame.K_d:
                 player.move_right()
         elif event.type == pygame.USEREVENT:
-        # Событие завершения воспроизведения музыки, воспроизводим её заново
+            # Событие завершения воспроизведения музыки, воспроизводим её заново
             pygame.mixer.music.play()
 
     spawn_timer += clock.tick(30)  # Получение прошедшего времени с момента последнего кадра
@@ -327,11 +302,8 @@ while running:
     # Удаление объектов Wave, которые вышли за пределы экрана
     waves = [wave for wave in waves if not wave.is_out_of_screen(height)]
 
-
     board.render(screen)
     screen.blit(background_image, background_rect)
-
-
 
     for wave in waves:
         wave.draw(screen)
@@ -345,7 +317,6 @@ while running:
 
         hits = pygame.sprite.collide_mask(wave, player)
 
-
         offset = (int(player.column * player.cell_size - wave.column * wave.cell_size),
                   int(player.row * player.cell_size - wave.row * wave.cell_size))
 
@@ -356,10 +327,6 @@ while running:
             show_end_screen()
             reset_game()
 
-
-
-
-
         # Увеличение количества очков при жизни игрока
         score += 0.05
 
@@ -367,7 +334,6 @@ while running:
         font = pygame.font.Font('CaptainComicBold.ttf', 36)
         score_text = font.render(f"Score: {int(score)}", True, (0, 0, 0))
         screen.blit(score_text, (width - 200, 10))
-
 
         pygame.display.flip()
 
